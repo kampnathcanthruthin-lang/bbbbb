@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ระบบเช็คชื่อหน้าเสาธง ม.6/8 - รร.แม่สะเรียง "บริพัตรศึกษา"</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0a0a0a;
+            --card-bg: rgba(18, 18, 24, 0.75);
+            --neon-purple: #c084fc;
+            --cyber-lime: #10b981;
+            --sunset-orange: #f97316;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-glow: rgba(192, 132, 252, 0.3);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Prompt', 'Kanit', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient Cyberpunk Glow Background */
+        .bg-glow {
+            position: fixed;
+            top: -20vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80vw;
+            height: 50vh;
+            background: radial-gradient(circle, rgba(192, 132, 252, 0.15) 0%, rgba(16, 185, 129, 0.05) 50%, transparent 80%);
+            z-index: 0;
+            pointer-events: none;
+            filter: blur(60px);
+        }
+
+        /* Container Layout */
+        .wrapper {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Header Neo-Brutalism Style */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 2px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 16px 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-img {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            border: 2px solid var(--neon-purple);
+            object-fit: cover;
+            box-shadow: 0 0 15px rgba(192, 132, 252, 0.4);
+        }
+
+        .brand-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .brand-subtitle {
+            font-size: 0.85rem;
+            color: var(--neon-purple);
+        }
+
+        .badge-class {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--cyber-lime);
+            border: 1px solid var(--cyber-lime);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        /* Hero Section Bento Style */
+        .hero-bento {
+            background: linear-gradient(135deg, rgba(20, 20, 30, 0.8) 0%, rgba(10, 10, 15, 0.9) 100%);
+            border: 2px solid rgba(192, 132, 252, 0.2);
+            border-radius: 28px;
+            padding: 36px 30px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bento::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, var(--neon-purple), var(--cyber-lime), var(--sunset-orange));
+        }
+
+        h1.main-title {
+            font-family: 'Kanit', sans-serif;
+            font-size: clamp(2.2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ffffff 30%, var(--neon-purple) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 5px 25px rgba(192, 132, 252, 0.2);
+        }
+
+        .hero-desc {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 28px;
+        }
+
+        /* Glassmorphism Cards */
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            text-align: left;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media(max-width: 650px) {
+            .form-grid { grid-template-columns: 1fr; }
+            header { flex-direction: column; gap: 12px; text-align: center; }
+            .brand { flex-direction: column; }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        input, select {
+            width: 100%;
+            background: rgba(10, 10, 15, 0.8);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-family: 'Prompt', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 15px rgba(192, 132, 252, 0.3);
+            background: rgba(15, 15, 25, 0.95);
+        }
+
+        /* Glow CTA Button */
+        .btn-submit {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, var(--neon-purple) 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-family: 'Kanit', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(192, 132, 252, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 6px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(192, 132, 252, 0.7);
+            background: linear-gradient(135deg, #d8b4fe 0%, var(--neon-purple) 100%);
+        }
+
+        /* Table & Section Headers */
+        .section-title {
+            font-family: 'Kanit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .table-container {
+            max-height: 200px;
+            overflow-y: auto;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        th {
+            background: rgba(192, 132, 252, 0.1);
+            color: var(--neon-purple);
+            padding: 10px 14px;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(8px);
+        }
+
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge-ontime { background: rgba(16, 185, 129, 0.2); color: var(--cyber-lime); border: 1px solid var(--cyber-lime); }
+        .badge-late { background: rgba(249, 115, 22, 0.2); color: var(--sunset-orange); border: 1px solid var(--sunset-orange); }
+        .badge-leave { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid #3b82f6; }
+        .badge-absent { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid #ef4444; }
+
+        /* Popup Modal */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(5, 5, 8, 0.8);
+            backdrop-filter: blur(12px);
+            z-index: 999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-box {
+            background: rgba(18, 18, 25, 0.95);
+            border: 2px solid var(--neon-purple);
+            border-radius: 24px;
+            padding: 36px 28px;
+            text-align: center;
+            max-width: 380px;
+            width: 90%;
+            box-shadow: 0 25px 60px rgba(192, 132, 252, 0.3);
+            transform: scale(0.85);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.active .modal-box {
+            transform: scale(1);
+        }
+
+        .modal-icon {
+            font-size: 48px;
+            margin-bottom: 14px;
+            animation: floatIcon 2s infinite ease-in-out;
+        }
+
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .modal-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .modal-btn {
+            background: linear-gradient(135deg, var(--neon-purple) 0%, #7c3aed 100%);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 36px;
+            font-family: 'Kanit', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(192, 132, 252, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(192, 132, 252, 0.7);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+    <!-- Popup Modal แจ้งเตือนสุดน่ารัก -->
+    <div class="modal-overlay" id="popupModal">
+        <div class="modal-box">
+            <div class="modal-icon">💖</div>
+            <div class="modal-text">ได้บันทึกข้อมูลของคนน่ารักเรียบร้อยแล้วครับ</div>
+            <button class="modal-btn" onclick="closePopup()">ตกลง</button>
+        </div>
+    </div>
+
+    <div class="wrapper">
+        <!-- Header -->
+        <header>
+            <div class="brand">
+                <img src="logo.png" alt="โลโก้โรงเรียน" class="logo-img" onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1200px-React-icon.svg.png'">
+                <div>
+                    <div class="brand-title">รร.แม่สะเรียง "บริพัตรศึกษา"</div>
+                    <div class="brand-subtitle">ระบบเช็คชื่อแถวหน้าเสาธง</div>
+                </div>
+            </div>
+            <div class="badge-class">ม.6/8</div>
+        </header>
+
+        <!-- Hero Bento Section -->
+        <section class="hero-bento">
+            <h1 class="main-title">MORNING CHECK-IN 6/8</h1>
+            <p class="hero-desc">ระบบบันทึกเวลามาแถวหน้าเสาธงออนไลน์ รวดเร็วและแม่นยำ</p>
+            
+            <div class="glass-card" style="background: rgba(10, 10, 15, 0.6);">
+                <form id="checkinForm" class="form-grid">
+                    <div class="input-group">
+                        <label for="studentId">รหัสนักเรียน / เลขที่</label>
+                        <input type="text" id="studentId" placeholder="กรอกรหัสหรือเลขที่..." required autofocus>
+                    </div>
+                    <div class="input-group">
+                        <label for="status">สถานะการมาเรียน</label>
+                        <select id="status">
+                            <option value="มาทันเวลา">✅ มาทันเวลา</option>
+                            <option value="มาสาย">⚠️ มาสาย</option>
+                            <option value="ลา">🟦 ลา (มีใบลา)</option>
+                            <option value="ขาด">❌ ขาดเรียน</option>
+                        </select>
+                    </div>
+                    <button type="submit" id="submitBtn" class="btn-submit">บันทึกข้อมูลเข้าสู่ระบบ</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Data Table Section -->
+        <section class="glass-card">
+            <div class="section-title">📊 รายงานการเข้าแถววันนี้</div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>เวลา</th>
+                            <th>รหัสนักเรียน</th>
+                            <th>สถานะ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultTable">
+                        <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">กำลังโหลดข้อมูล...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // ลิงก์ Google Apps Script ของคุณ
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwcRtM9amOcrQfxwx1-_L0n7efhDXC3vv4EXxX_RewVBSBI9MZAbDlFj-6QvrjHpQUP/exec";
+
+        function showPopup() {
+            document.getElementById('popupModal').classList.add('active');
+        }
+
+        function closePopup() {
+            document.getElementById('popupModal').classList.remove('active');
+        }
+
+        // จัดการฟอร์มส่งข้อมูลไปยัง Google Sheets
+        document.getElementById('checkinForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const studentId = document.getElementById('studentId').value.trim();
+            const status = document.getElementById('status').value;
+            const btn = document.getElementById('submitBtn');
+
+            if(!studentId) return;
+
+            btn.style.opacity = '0.6';
+            btn.disabled = true;
+
+            fetch(WEB_APP_URL, {
+                method: 'POST',
+                body: JSON.stringify({ studentId: studentId, status: status })
+            })
+            .then(res => res.json())
+            .then(res => {
+                showPopup();
+                document.getElementById('studentId').value = '';
+                document.getElementById('studentId').focus();
+                loadData();
+            })
+            .catch(err => {
+                alert("เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง");
+                console.error(err);
+            })
+            .finally(() => {
+                btn.style.opacity = '1';
+                btn.disabled = false;
+            });
+        });
+
+        // ดึงข้อมูลมาแสดงผลในตาราง
+        function loadData() {
+            if(!WEB_APP_URL) return;
+            fetch(WEB_APP_URL)
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.getElementById('resultTable');
+                tbody.innerHTML = '';
+                if(!data || data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">ยังไม่มีข้อมูลวันนี้</td></tr>`;
+                    return;
+                }
+                data.reverse().forEach(row => {
+                    let tr = document.createElement('tr');
+                    let timeStr = new Date(row.timestamp).toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+                    
+                    let badgeClass = 'badge-ontime';
+                    if(row.status === 'มาสาย') badgeClass = 'badge-late';
+                    else if(row.status === 'ลา') badgeClass = 'badge-leave';
+                    else if(row.status === 'ขาด') badgeClass = 'badge-absent';
+
+                    tr.innerHTML = `
+                        <td>${timeStr}</td>
+                        <td style="font-weight: 600;">${row.studentId}</td>
+                        <td><span class="status-badge ${badgeClass}">${row.status}</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }).catch(err => console.error(err));
+        }
+
+        loadData();
+    </script>
+</body>
+</html>
